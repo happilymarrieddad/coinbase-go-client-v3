@@ -15,7 +15,7 @@ go get github.com/happilymarrieddad/coinbase-go-client-v3
 import (
     "fmt"
     "context"
-	"net/http"
+    "net/http"
 
     coinbasegoclientv3 "github.com/happilymarrieddad/coinbase-go-client-v3"
 )
@@ -32,7 +32,9 @@ func main() {
     productCandles, _ := client.GetProductCandles(
         ctx, "some-product-id",
         fmt.Sprintf("%d", time.Now().Add(time.Hour*-12).Unix()),
-        fmt.Sprintf("%d", time.Now().Unix()), coinbasegoclientv3.FiveMinuteGranularity)
+        fmt.Sprintf("%d", time.Now().Unix()),
+        coinbasegoclientv3.FiveMinuteGranularity,
+    )
     // Do something with productCandles
 }
 ```
