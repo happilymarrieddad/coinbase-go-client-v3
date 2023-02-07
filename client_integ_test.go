@@ -203,4 +203,12 @@ var _ = Describe("Client", func() {
 	// 	})
 	// })
 
+	Context("CreateOrder", func() {
+
+	})
+
+	Context("CancelOrders", func() {
+
+	})
+
 })

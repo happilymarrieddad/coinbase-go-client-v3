@@ -33,7 +33,12 @@ type Client interface {
 	GetMarketTrades(ctx context.Context, uuidStr string, numOfTradesToReturn int) ([]*MarketTrade, error)
 	GetTransactionHistory(ctx context.Context, startTimeInRFC3339NanoTime string,
 		endTimeInRFC3339NanoTime string, userNativeCurrency string, typ ProductType) (*TransactionSummary, error)
+	// CreateOrder not tested yet...
 	CreateOrder(ctx context.Context, createBody *CreateOrderBody) (newOrd *CreateOrderData, err error)
+	// CancelOrders not tested yet...
+	CancelOrders(ctx context.Context, orderIDs []string) error
+	// GetOrder not tested yet...
+	GetOrder(ctx context.Context, orderID string) (*Order, error)
 	// ListOrders doesn't work
 	// 		https://forums.coinbasecloud.dev/t/listorders-error-orderexecutionstatus/2699
 	ListOrders(
@@ -331,6 +336,82 @@ func (c *client) CreateOrder(ctx context.Context, createBody *CreateOrderBody) (
 	}
 
 	return newOrd, nil
+}
+
+func (c *client) CancelOrders(ctx context.Context, orderIDs []string) error {
+	data := struct {
+		Results []struct {
+			Success       bool   `json:"success"`
+			FailureReason string `json:"failure_reason"`
+			OrderID       string `json:"order_id"`
+		} `json:"results"`
+	}{}
+
+	body := struct {
+	}{}
+
+	bodyBts, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+
+	uri := "/api/v3/brokerage/orders/batch_cancel"
+
+	res, err := c.makeRequest(ctx, POSTHttpMethod, uri, nil, bytes.NewBuffer(bodyBts))
+	if err = c.handleErrorStatusCode(res, err); err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	resBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	if err = json.Unmarshal(resBody, &data); err != nil {
+		return err
+	}
+
+	if len(data.Results) > 0 {
+		if data.Results[0].Success {
+			return nil
+		}
+
+		return errors.New(data.Results[0].FailureReason)
+	}
+
+	bts, err := json.Marshal(data.Results)
+	if err != nil {
+		return err
+	}
+
+	// This should never happen
+	return errors.New("unknown error: " + string(bts))
+}
+
+func (c *client) GetOrder(ctx context.Context, orderID string) (ord *Order, err error) {
+	data := struct {
+		Order *Order `json:"order"`
+	}{}
+
+	uri := fmt.Sprintf("/api/v3/brokerage/orders/historical/%s", orderID)
+
+	res, err := c.makeRequest(ctx, GETHttpMethod, uri, nil, nil)
+	if err = c.handleErrorStatusCode(res, err); err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(body, &data); err != nil {
+		return nil, err
+	}
+
+	return data.Order, nil
 }
 
 func (c *client) ListOrders(
