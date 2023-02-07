@@ -1,3 +1,6 @@
+//go:build integ
+// +build integ
+
 package coinbasegoclientv3_test
 
 import (

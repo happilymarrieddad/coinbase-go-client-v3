@@ -69,25 +69,25 @@ type ProductCandle struct {
 	Volume string `json:"volume"`
 }
 
-type granularity string
+type Granularity string
 
 const (
-	OneMinuteGranularity     granularity = "ONE_MINUTE"
-	FiveMinuteGranularity    granularity = "FIVE_MINUTE"
-	FifteenMinuteGranularity granularity = "FIFTEEN_MINUTE"
-	ThirtyMinuteGranularity  granularity = "THIRTY_MINUTE"
-	OneHourGranularity       granularity = "ONE_HOUR"
-	TwoHourGranularity       granularity = "TWO_HOUR"
-	SixHourGranularity       granularity = "SIX_HOUR"
-	OneDayGranularity        granularity = "ONE_DAY"
+	OneMinuteGranularity     Granularity = "ONE_MINUTE"
+	FiveMinuteGranularity    Granularity = "FIVE_MINUTE"
+	FifteenMinuteGranularity Granularity = "FIFTEEN_MINUTE"
+	ThirtyMinuteGranularity  Granularity = "THIRTY_MINUTE"
+	OneHourGranularity       Granularity = "ONE_HOUR"
+	TwoHourGranularity       Granularity = "TWO_HOUR"
+	SixHourGranularity       Granularity = "SIX_HOUR"
+	OneDayGranularity        Granularity = "ONE_DAY"
 )
 
-type side string
+type Side string
 
 const (
-	UnknownOrderSide side = "UNKNOWN_ORDER_SIDE"
-	BuySide          side = "BUY"
-	SellSide         side = "SELL"
+	UnknownOrderSide Side = "UNKNOWN_ORDER_SIDE"
+	BuySide          Side = "BUY"
+	SellSide         Side = "SELL"
 )
 
 type MarketTrade struct {
@@ -96,7 +96,7 @@ type MarketTrade struct {
 	Price     string `json:"price"`
 	Size      string `json:"size"`
 	Time      string `json:"time"` // "time": "2021-05-31T09:59:59Z",
-	Side      side   `json:"side"`
+	Side      Side   `json:"side"`
 	Bid       string `json:"bid"`
 	Ask       string `json:"ask"`
 }
@@ -112,7 +112,7 @@ type MarginRate struct {
 	Value string `json:"value"`
 }
 
-type goodsAndServicesTaxType string
+type GoodsAndServicesTaxType string
 
 const (
 	InclusiveGoodsAndServicesTaxType string = "INCLUSIVE"
@@ -121,7 +121,7 @@ const (
 
 type GoodsAndServicesTax struct {
 	Rate string                  `json:"rate"`
-	Type goodsAndServicesTaxType `json:"type"`
+	Type GoodsAndServicesTaxType `json:"type"`
 }
 
 type TransactionSummary struct {
@@ -136,8 +136,8 @@ type TransactionSummary struct {
 	CoinbaseProFees         float64             `json:"coinbase_pro_fees"`
 }
 
-type productType string
+type ProductType string
 
 const (
-	SpotProductType productType = "SPOT"
+	SpotProductType ProductType = "SPOT"
 )

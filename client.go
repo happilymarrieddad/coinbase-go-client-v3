@@ -25,11 +25,11 @@ type Client interface {
 		uuidStr string,
 		startTimeInUnixTime string,
 		endTimeInUnixTime string,
-		gran granularity,
+		gran Granularity,
 	) ([]*ProductCandle, error)
 	GetMarketTrades(ctx context.Context, uuidStr string, numOfTradesToReturn int) ([]*MarketTrade, error)
 	GetTransactionHistory(ctx context.Context, startTimeInUnixTime string,
-		endTimeInUnixTime string, userNativeCurrency string, typ productType) (*TransactionSummary, error)
+		endTimeInUnixTime string, userNativeCurrency string, typ ProductType) (*TransactionSummary, error)
 }
 
 func NewClient(
@@ -189,7 +189,7 @@ func (c *client) GetProductCandles(
 	uuidStr string,
 	startTimeInUnixTime string,
 	endTimeInUnixTime string,
-	gran granularity,
+	gran Granularity,
 ) ([]*ProductCandle, error) {
 	data := struct {
 		Candles []*ProductCandle `json:"candles"`
@@ -251,7 +251,7 @@ func (c *client) GetMarketTrades(ctx context.Context, uuidStr string, numOfTrade
 }
 
 func (c *client) GetTransactionHistory(ctx context.Context, startTimeInUnixTime string,
-	endTimeInUnixTime string, userNativeCurrency string, typ productType) (*TransactionSummary, error) {
+	endTimeInUnixTime string, userNativeCurrency string, typ ProductType) (*TransactionSummary, error) {
 	ts := new(TransactionSummary)
 
 	uri := "/api/v3/brokerage/transaction_summary"
