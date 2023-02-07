@@ -26,7 +26,11 @@ func main() {
         Timeout: time.Second * 30,
     }
 
-    client, _ = coinbasegoclientv3.NewClient(httpClient, "", os.Getenv("COINBASE_TEST_API_KEY"), os.Getenv("COINBASE_TEST_API_SECRET"))
+    client, _ = coinbasegoclientv3.NewClient(
+        httpClient, "", 
+        os.Getenv("COINBASE_TEST_API_KEY"), 
+        os.Getenv("COINBASE_TEST_API_SECRET"),
+    )
     ...
 
     productCandles, _ := client.GetProductCandles(
