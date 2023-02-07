@@ -42,6 +42,11 @@ type Client interface {
 		productType ProductType,
 		opts *ListOrdersOpts,
 	) (data *ListOrderData, err error)
+	// ListFills not tested yet...
+	ListFills(
+		ctx context.Context, orderID, productID,
+		startSequenceTimestampInUnixTime, endSequenceTimestampInUnixTime string,
+		opts *ListFillsOpts) (*ListFillsData, error)
 }
 
 func NewClient(
@@ -320,6 +325,44 @@ func (c *client) ListOrders(
 		AssignStrIfSetToMap("cursor", opts.Cursor, params)
 		AssignStrIfSetToMap("end_date", opts.EndDateInUnixTime, params)
 		AssignStrIfSetToMap("order_side", string(opts.OrderSide), params)
+	}
+
+	res, err := c.makeRequest(ctx, GETHttpMethod, uri, params, nil)
+	if err = c.handleErrorStatusCode(res, err); err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(body, data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (c *client) ListFills(
+	ctx context.Context, orderID, productID,
+	startSequenceTimestampInUnixTime, endSequenceTimestampInUnixTime string,
+	opts *ListFillsOpts) (data *ListFillsData, err error) {
+	data = new(ListFillsData)
+
+	uri := "/api/v3/brokerage/orders/historical/batch"
+
+	params := map[string]string{
+		"order_id":                 orderID,
+		"product_id":               productID,
+		"start_sequence_timestamp": startSequenceTimestampInUnixTime,
+		"end_sequence_timestamp":   endSequenceTimestampInUnixTime,
+	}
+
+	if opts != nil {
+		AssignStrIfSetToMap("limit", fmt.Sprintf("%d", opts.Limit), params)
+		AssignStrIfSetToMap("cursor", opts.Cursor, params)
 	}
 
 	res, err := c.makeRequest(ctx, GETHttpMethod, uri, params, nil)

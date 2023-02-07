@@ -229,3 +229,30 @@ type ListOrderData struct {
 	HasNext  bool     `json:"has_next"`
 	Cursor   string   `json:"cursor"`
 }
+
+type Fill struct {
+	EntryID            string    `json:"entry_id"`
+	TradeID            string    `json:"trade_id"`
+	OrderID            string    `json:"order_id"`
+	TradeTime          time.Time `json:"trade_time"`
+	TradeType          string    `json:"trade_type"`
+	Price              string    `json:"price"`
+	Size               string    `json:"size"`
+	Commission         string    `json:"commission"`
+	ProductID          string    `json:"product_id"`
+	SequenceTimestamp  time.Time `json:"sequence_timestamp"`
+	LiquidityIndicator string    `json:"liquidity_indicator"`
+	SizeInQuote        bool      `json:"size_in_quote"`
+	UserID             string    `json:"user_id"`
+	Side               Side      `json:"side"`
+}
+
+type ListFillsData struct {
+	Fills  []*Fill `json:"fills"`
+	Cursor string  `json:"cursor"`
+}
+
+type ListFillsOpts struct {
+	Limit  int64
+	Cursor string
+}

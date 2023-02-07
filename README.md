@@ -44,3 +44,9 @@ WARNING!!! Running the INTEG tests as they are at the moment run against the REA
 
 ## Instructions
 TODO:
+
+## Build examples
+```go
+//go:build integ
+// +build integ
+```

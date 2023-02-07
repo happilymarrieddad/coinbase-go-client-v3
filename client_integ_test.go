@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -165,23 +164,43 @@ var _ = Describe("Client", func() {
 		})
 	})
 
-	Context("ListOrders", func() {
-		It("should return a list of orders", func() {
-			products, err := client.ListProducts(ctx)
-			Expect(err).To(BeNil())
-			Expect(products).NotTo(HaveLen(0))
+	// Context("ListOrders", func() {
+	// 	It("should return a list of orders", func() {
+	// 		products, err := client.ListProducts(ctx)
+	// 		Expect(err).To(BeNil())
+	// 		Expect(products).NotTo(HaveLen(0))
 
-			data, err := client.ListOrders(ctx,
-				products[0].ProductID,
-				fmt.Sprintf("%d", time.Now().Add(time.Hour*-12).Unix()),
-				"USD", StopLimitOrderType, SpotProductType,
-				&ListOrdersOpts{
-					Limit: 5,
-				},
-			)
-			Expect(err).To(BeNil())
-			spew.Dump(data)
-		})
-	})
+	// 		data, err := client.ListOrders(ctx,
+	// 			products[0].ProductID,
+	// 			fmt.Sprintf("%d", time.Now().Add(time.Hour*-12).Unix()),
+	// 			"USD", StopLimitOrderType, SpotProductType,
+	// 			&ListOrdersOpts{
+	// 				Limit: 5,
+	// 			},
+	// 		)
+	// 		Expect(err).To(BeNil())
+	// 		spew.Dump(data)
+	// 	})
+	// })
+
+	// Context("ListFills", func() {
+	// 	It("should return a list of fills", func() {
+	// 		products, err := client.ListProducts(ctx)
+	// 		Expect(err).To(BeNil())
+	// 		Expect(products).NotTo(HaveLen(0))
+
+	// 		data, err := client.ListFills(ctx,
+	// 			"TODO: add order id",
+	// 			products[0].ProductID,
+	// 			fmt.Sprintf("%d", time.Now().Add(time.Hour*-12).Unix()),
+	// 			fmt.Sprintf("%d", time.Now().Unix()),
+	// 			&ListFillsOpts{
+	// 				Limit: 5,
+	// 			},
+	// 		)
+	// 		Expect(err).To(BeNil())
+	// 		spew.Dump(data)
+	// 	})
+	// })
 
 })

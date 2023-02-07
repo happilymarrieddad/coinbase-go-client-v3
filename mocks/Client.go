@@ -140,6 +140,21 @@ func (mr *MockClientMockRecorder) ListAccounts(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccounts", reflect.TypeOf((*MockClient)(nil).ListAccounts), arg0)
 }
 
+// ListFills mocks base method.
+func (m *MockClient) ListFills(arg0 context.Context, arg1, arg2, arg3, arg4 string, arg5 *coinbasegoclientv3.ListFillsOpts) (*coinbasegoclientv3.ListFillsData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListFills", arg0, arg1, arg2, arg3, arg4, arg5)
+	ret0, _ := ret[0].(*coinbasegoclientv3.ListFillsData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListFills indicates an expected call of ListFills.
+func (mr *MockClientMockRecorder) ListFills(arg0, arg1, arg2, arg3, arg4, arg5 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFills", reflect.TypeOf((*MockClient)(nil).ListFills), arg0, arg1, arg2, arg3, arg4, arg5)
+}
+
 // ListOrders mocks base method.
 func (m *MockClient) ListOrders(arg0 context.Context, arg1, arg2, arg3 string, arg4 coinbasegoclientv3.OrderType, arg5 coinbasegoclientv3.ProductType, arg6 *coinbasegoclientv3.ListOrdersOpts) (*coinbasegoclientv3.ListOrderData, error) {
 	m.ctrl.T.Helper()
