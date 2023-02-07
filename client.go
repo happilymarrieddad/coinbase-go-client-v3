@@ -1,11 +1,13 @@
 package coinbasegoclientv3
 
 import (
+	"bytes"
 	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -31,6 +33,7 @@ type Client interface {
 	GetMarketTrades(ctx context.Context, uuidStr string, numOfTradesToReturn int) ([]*MarketTrade, error)
 	GetTransactionHistory(ctx context.Context, startTimeInRFC3339NanoTime string,
 		endTimeInRFC3339NanoTime string, userNativeCurrency string, typ ProductType) (*TransactionSummary, error)
+	CreateOrder(ctx context.Context, createBody *CreateOrderBody) (newOrd *CreateOrderData, err error)
 	// ListOrders doesn't work
 	// 		https://forums.coinbasecloud.dev/t/listorders-error-orderexecutionstatus/2699
 	ListOrders(
@@ -296,6 +299,38 @@ func (c *client) GetTransactionHistory(ctx context.Context, startTimeInRFC3339Na
 	}
 
 	return ts, nil
+}
+
+func (c *client) CreateOrder(ctx context.Context, createBody *CreateOrderBody) (newOrd *CreateOrderData, err error) {
+	newOrd = new(CreateOrderData)
+
+	if createBody == nil {
+		return nil, errors.New("create order body required and cannot be nil")
+	}
+
+	bodyBts, err := json.Marshal(createBody)
+	if err != nil {
+		return nil, err
+	}
+
+	uri := "/api/v3/brokerage/orders"
+
+	res, err := c.makeRequest(ctx, POSTHttpMethod, uri, nil, bytes.NewBuffer(bodyBts))
+	if err = c.handleErrorStatusCode(res, err); err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	resBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(resBody, newOrd); err != nil {
+		return nil, err
+	}
+
+	return newOrd, nil
 }
 
 func (c *client) ListOrders(

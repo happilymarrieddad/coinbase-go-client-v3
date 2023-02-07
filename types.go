@@ -256,3 +256,34 @@ type ListFillsOpts struct {
 	Limit  int64
 	Cursor string
 }
+
+type CreateOrderSuccessResponse struct {
+	OrderID       string `json:"order_id"`
+	ProductID     string `json:"product_id"`
+	Side          Side   `json:"side"`
+	ClientOrderID string `json:"client_order_id"`
+}
+
+type ErrorResponse struct {
+	Error                 string `json:"error"`
+	Message               string `json:"message"`
+	ErrorDetails          string `json:"error_details"`
+	PreviewFailureReason  string `json:"preview_failure_reason"`
+	NewOrderFailureReason string `json:"new_order_failure_reason"`
+}
+
+type CreateOrderData struct {
+	Success            bool                       `json:"success"`
+	FailureReason      string                     `json:"failure_reason"`
+	OrderID            string                     `json:"order_id"`
+	SuccessResponse    CreateOrderSuccessResponse `json:"success_response"`
+	ErrorResponse      ErrorResponse              `json:"error_response"`
+	OrderConfiguration OrderConfiguration         `json:"order_configuration"`
+}
+
+type CreateOrderBody struct {
+	CreateOrderID      string             `json:"create_order_id"`
+	ProductID          string             `json:"product_id"`
+	Side               Side               `json:"side"`
+	OrderConfiguration OrderConfiguration `json:"order_configuration"`
+}

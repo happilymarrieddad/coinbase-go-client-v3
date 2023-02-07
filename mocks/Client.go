@@ -35,6 +35,21 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 	return m.recorder
 }
 
+// CreateOrder mocks base method.
+func (m *MockClient) CreateOrder(arg0 context.Context, arg1 *coinbasegoclientv3.CreateOrderBody) (*coinbasegoclientv3.CreateOrderData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateOrder", arg0, arg1)
+	ret0, _ := ret[0].(*coinbasegoclientv3.CreateOrderData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateOrder indicates an expected call of CreateOrder.
+func (mr *MockClientMockRecorder) CreateOrder(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateOrder", reflect.TypeOf((*MockClient)(nil).CreateOrder), arg0, arg1)
+}
+
 // GetAccount mocks base method.
 func (m *MockClient) GetAccount(arg0 context.Context, arg1 string) (*coinbasegoclientv3.Account, error) {
 	m.ctrl.T.Helper()
