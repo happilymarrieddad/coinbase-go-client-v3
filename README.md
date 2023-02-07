@@ -65,9 +65,6 @@ make test.unit
 ## Notes about tests
 WARNING!!! Running the INTEG tests as they are at the moment run against the REAL coinbase API. Do not run them unless you have thoroughly gone through the tests, know how they work and are okay with live tests!!!!
 
-## Instructions
-TODO:
-
 ## Build examples
 ```go
 //go:build integ
