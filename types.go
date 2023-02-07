@@ -141,3 +141,91 @@ type ProductType string
 const (
 	SpotProductType ProductType = "SPOT"
 )
+
+type MarketMarketIOC struct {
+	QuoteSize string `json:"quote_size"`
+	BaseSize  string `json:"base_size"`
+}
+
+type LimitLimitQTD struct {
+	BaseSize   string    `json:"base_size"`
+	LimitPrice string    `json:"limit_price"`
+	EndTime    time.Time `json:"end_time"`
+	PostOnly   bool      `json:"post_only"`
+}
+
+type StopLimitStopLimitGTC struct {
+	BaseSize      string `json:"base_size"`
+	LimitPrice    string `json:"limit_price"`
+	StopPrice     string `json:"stop_price"`
+	StopDirection string `json:"stop_direction"`
+}
+
+type StopLimitStopLimitGTD struct {
+	BaseSize      string    `json:"base_size"`
+	LimitPrice    string    `json:"limit_price"`
+	StopPrice     string    `json:"stop_price"`
+	EndTime       time.Time `json:"end_time"`
+	StopDirection string    `json:"stop_direction"`
+}
+
+type OrderConfiguration struct {
+	MarketMarketIOC       MarketMarketIOC       `json:"market_market_ioc"`
+	LimitLimitQTD         LimitLimitQTD         `json:"limit_limit_qtd"`
+	StopLimitStopLimitGTC StopLimitStopLimitGTC `json:"stop_limit_stop_limit_gtc"`
+	StopLimitStopLimitGTD StopLimitStopLimitGTD `json:"stop_limit_stop_limit_gtd"`
+}
+
+type Order struct {
+	OrderID              string             `json:"order_id"`
+	ProductID            string             `json:"product_id"`
+	UserID               string             `json:"user_id"`
+	OrderConfiguration   OrderConfiguration `json:"order_configuration"`
+	Side                 Side               `json:"side"`
+	ClientOrderID        string             `json:"client_order_id"`
+	Status               string             `json:"status"`
+	TimeInForce          string             `json:"time_in_force"`
+	CreatedTime          time.Time          `json:"created_time"`
+	CompletionPercentage string             `json:"completion_percentage"`
+	FilledSize           string             `json:"filled_size"`
+	AverageFilledPrice   string             `json:"average_filled_price"`
+	Fee                  string             `json:"fee"`
+	NumberOfFills        string             `json:"number_of_fills"`
+	FilledValue          string             `json:"filled_value"`
+	PendingCancel        bool               `json:"pending_cancel"`
+	SizeInQuote          bool               `json:"size_in_quote"`
+	TotalFees            string             `json:"total_fees"`
+	SizeInclusiveOfFees  bool               `json:"size_inclusive_of_fees"`
+	TotalValueAfterFees  string             `json:"total_value_after_fees"`
+	TriggerStatus        string             `json:"trigger_status"`
+	OrderType            string             `json:"order_type"`
+	RejectReason         string             `json:"reject_reason"`
+	Settled              string             `json:"settled"`
+	ProductType          string             `json:"product_type"`
+	RejectMessage        string             `json:"reject_message"`
+	CancelMessage        string             `json:"cancel_message"`
+}
+
+type ListOrdersOpts struct {
+	OrderStatus       []string
+	Limit             uint32
+	Cursor            string
+	EndDateInUnixTime string
+	OrderSide         Side
+}
+
+type OrderType string
+
+const (
+	MarketOrderType    OrderType = "MARKET"
+	LimitOrderType     OrderType = "LIMIT"
+	StopOrderType      OrderType = "STOP"
+	StopLimitOrderType OrderType = "STOP_LIMIT"
+)
+
+type ListOrderData struct {
+	Orders   []*Order `json:"orders"`
+	Sequence string   `json:"sequence"`
+	HasNext  bool     `json:"has_next"`
+	Cursor   string   `json:"cursor"`
+}

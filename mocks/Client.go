@@ -140,6 +140,21 @@ func (mr *MockClientMockRecorder) ListAccounts(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListAccounts", reflect.TypeOf((*MockClient)(nil).ListAccounts), arg0)
 }
 
+// ListOrders mocks base method.
+func (m *MockClient) ListOrders(arg0 context.Context, arg1, arg2, arg3 string, arg4 coinbasegoclientv3.OrderType, arg5 coinbasegoclientv3.ProductType, arg6 *coinbasegoclientv3.ListOrdersOpts) (*coinbasegoclientv3.ListOrderData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOrders", arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+	ret0, _ := ret[0].(*coinbasegoclientv3.ListOrderData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListOrders indicates an expected call of ListOrders.
+func (mr *MockClientMockRecorder) ListOrders(arg0, arg1, arg2, arg3, arg4, arg5, arg6 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOrders", reflect.TypeOf((*MockClient)(nil).ListOrders), arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+}
+
 // ListProducts mocks base method.
 func (m *MockClient) ListProducts(arg0 context.Context) ([]*coinbasegoclientv3.Product, error) {
 	m.ctrl.T.Helper()

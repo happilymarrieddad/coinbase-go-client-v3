@@ -15,6 +15,7 @@ import (
 
 //go:generate mockgen -destination=./mocks/Client.go -package=mock_client coinbase-go-client-v3 Client
 type Client interface {
+	// IsActive tells you if the api is up
 	IsActive(ctx context.Context) (bool, error)
 	ListAccounts(ctx context.Context) ([]*Account, error)
 	GetAccount(ctx context.Context, uuidStr string) (*Account, error)
@@ -28,8 +29,19 @@ type Client interface {
 		gran Granularity,
 	) ([]*ProductCandle, error)
 	GetMarketTrades(ctx context.Context, uuidStr string, numOfTradesToReturn int) ([]*MarketTrade, error)
-	GetTransactionHistory(ctx context.Context, startTimeInUnixTime string,
-		endTimeInUnixTime string, userNativeCurrency string, typ ProductType) (*TransactionSummary, error)
+	GetTransactionHistory(ctx context.Context, startTimeInRFC3339NanoTime string,
+		endTimeInRFC3339NanoTime string, userNativeCurrency string, typ ProductType) (*TransactionSummary, error)
+	// ListOrders doesn't work
+	// 		https://forums.coinbasecloud.dev/t/listorders-error-orderexecutionstatus/2699
+	ListOrders(
+		ctx context.Context,
+		productID string,
+		startDateInUnixTime string,
+		userNativeCurrency string,
+		orderType OrderType,
+		productType ProductType,
+		opts *ListOrdersOpts,
+	) (data *ListOrderData, err error)
 }
 
 func NewClient(
@@ -250,15 +262,15 @@ func (c *client) GetMarketTrades(ctx context.Context, uuidStr string, numOfTrade
 	return data.Trades, nil
 }
 
-func (c *client) GetTransactionHistory(ctx context.Context, startTimeInUnixTime string,
-	endTimeInUnixTime string, userNativeCurrency string, typ ProductType) (*TransactionSummary, error) {
+func (c *client) GetTransactionHistory(ctx context.Context, startTimeInRFC3339NanoTime string,
+	endTimeInRFC3339NanoTime string, userNativeCurrency string, typ ProductType) (*TransactionSummary, error) {
 	ts := new(TransactionSummary)
 
 	uri := "/api/v3/brokerage/transaction_summary"
 
 	params := map[string]string{
-		"start_date":           startTimeInUnixTime,
-		"end_date":             endTimeInUnixTime,
+		"start_date":           startTimeInRFC3339NanoTime,
+		"end_date":             endTimeInRFC3339NanoTime,
 		"user_native_currency": userNativeCurrency,
 		"product_type":         string(typ),
 	}
@@ -281,6 +293,53 @@ func (c *client) GetTransactionHistory(ctx context.Context, startTimeInUnixTime 
 	return ts, nil
 }
 
+func (c *client) ListOrders(
+	ctx context.Context,
+	productID string,
+	startDateInUnixTime string,
+	userNativeCurrency string,
+	orderType OrderType,
+	productType ProductType,
+	opts *ListOrdersOpts,
+) (data *ListOrderData, err error) {
+	data = new(ListOrderData)
+
+	uri := "/api/v3/brokerage/orders/historical/batch"
+
+	params := map[string]string{
+		"product_id":           productID,
+		"start_date":           startDateInUnixTime,
+		"user_native_currency": userNativeCurrency,
+		"order_type":           string(orderType),
+		"product_type":         string(productType),
+	}
+
+	if opts != nil {
+		AssignStrIfSetToMap("order_status", StrArrToStr(opts.OrderStatus), params)
+		AssignStrIfSetToMap("limit", fmt.Sprintf("%d", opts.Limit), params)
+		AssignStrIfSetToMap("cursor", opts.Cursor, params)
+		AssignStrIfSetToMap("end_date", opts.EndDateInUnixTime, params)
+		AssignStrIfSetToMap("order_side", string(opts.OrderSide), params)
+	}
+
+	res, err := c.makeRequest(ctx, GETHttpMethod, uri, params, nil)
+	if err = c.handleErrorStatusCode(res, err); err != nil {
+		return nil, err
+	}
+	defer res.Body.Close()
+
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = json.Unmarshal(body, data); err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
 func (c *client) IsActive(ctx context.Context) (bool, error) {
 	res, err := c.makeRequest(ctx, GETHttpMethod, "/api/v3/brokerage/accounts", nil, nil)
 	if err = c.handleErrorStatusCode(res, err); err != nil {
@@ -294,6 +353,10 @@ func (c *client) handleErrorStatusCode(res *http.Response, err error) error {
 	if err != nil {
 		return err
 	} else if res.StatusCode/100 != 2 {
+		if res.StatusCode == 400 {
+			body, _ := io.ReadAll(res.Body)
+			return fmt.Errorf("%s :%s", NewCoinbaseGoClientErr(res.StatusCode), string(body))
+		}
 		return NewCoinbaseGoClientErr(res.StatusCode)
 	}
 

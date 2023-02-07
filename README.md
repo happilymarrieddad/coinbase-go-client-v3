@@ -13,10 +13,15 @@ go get github.com/happilymarrieddad/coinbase-go-client-v3
 ### Setup
 ```go
 import (
-  coinbasegoclientv3 "github.com/happilymarrieddad/coinbase-go-client-v3"
+    "fmt"
+    "context"
+	"net/http"
+
+    coinbasegoclientv3 "github.com/happilymarrieddad/coinbase-go-client-v3"
 )
 
 func main() {
+    ctx := context.Background()
     httpClient = &http.Client{
         Timeout: time.Second * 30,
     }

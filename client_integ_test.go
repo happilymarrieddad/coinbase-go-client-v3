@@ -1,6 +1,3 @@
-//go:build integ
-// +build integ
-
 package coinbasegoclientv3_test
 
 import (
@@ -11,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -96,9 +94,12 @@ var _ = Describe("Client", func() {
 			Expect(products).NotTo(HaveLen(0))
 
 			productCandles, err := client.GetProductCandles(
-				ctx, products[0].ProductID,
+				ctx,
+				products[0].ProductID,
 				fmt.Sprintf("%d", time.Now().Add(time.Hour*-12).Unix()),
-				fmt.Sprintf("%d", time.Now().Unix()), FiveMinuteGranularity)
+				fmt.Sprintf("%d", time.Now().Unix()),
+				FiveMinuteGranularity,
+			)
 			Expect(err).To(BeNil())
 			Expect(productCandles).NotTo(HaveLen(0))
 		})
@@ -124,6 +125,62 @@ var _ = Describe("Client", func() {
 				Bid: (string) "",
 				Ask: (string) ""
 			*/
+		})
+	})
+
+	Context("GetTransactionHistory", func() {
+		It("should successfully get the transaction history", func() {
+			hist, err := client.GetTransactionHistory(
+				ctx,
+				time.Now().Add(time.Hour*-12).Format(time.RFC3339Nano),
+				time.Now().Format(time.RFC3339Nano),
+				"USD",
+				SpotProductType,
+			)
+			Expect(err).To(BeNil())
+			Expect(hist.AdvancedTradeOnlyFees).To(BeNumerically(">", 0))
+			/*
+				(*coinbasegoclientv3.TransactionSummary)(0xc00022e000)({
+					TotalVolume: (float64) 58943.49609375,
+					TotalFees: (float64) 147.35873413085938,
+					FeeTier: (coinbasegoclientv3.FeeTier) {
+					PricingTier: (string) "",
+					USDFrom: (string) "",
+					USDTo: (string) "",
+					MakerFeeRate: (string) ""
+					},
+					MarginRate: (coinbasegoclientv3.MarginRate) {
+					Value: (string) ""
+					},
+					GoodsAndServicesTax: (coinbasegoclientv3.GoodsAndServicesTax) {
+					Rate: (string) "",
+					Type: (coinbasegoclientv3.GoodsAndServicesTaxType) ""
+					},
+					AdvancedTradeOnlyVolume: (float64) 58943.49609375,
+					AdvancedTradeOnlyFees: (float64) 147.35873413085938,
+					CoinbaseProVolume: (float64) 0,
+					CoinbaseProFees: (float64) 0
+				})
+			*/
+		})
+	})
+
+	Context("ListOrders", func() {
+		It("should return a list of orders", func() {
+			products, err := client.ListProducts(ctx)
+			Expect(err).To(BeNil())
+			Expect(products).NotTo(HaveLen(0))
+
+			data, err := client.ListOrders(ctx,
+				products[0].ProductID,
+				fmt.Sprintf("%d", time.Now().Add(time.Hour*-12).Unix()),
+				"USD", StopLimitOrderType, SpotProductType,
+				&ListOrdersOpts{
+					Limit: 5,
+				},
+			)
+			Expect(err).To(BeNil())
+			spew.Dump(data)
 		})
 	})
 
