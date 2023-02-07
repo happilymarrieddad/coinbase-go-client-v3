@@ -58,15 +58,21 @@ type Client interface {
 }
 
 func NewClient(
-	httpClient HTTPClient, hostURI, coinbaseKey, coinbaseSecret string,
+	httpClient HTTPClient, coinbaseKey, coinbaseSecret string,
 ) (Client, error) {
-	if len(hostURI) == 0 {
-		hostURI = "https://api.coinbase.com"
-	}
 
 	return &client{
 		httpClient:     httpClient,
-		hostURI:        hostURI,
+		HostURL:        "https://api.coinbase.com",
+		coinbaseKey:    coinbaseKey,
+		coinbaseSecret: coinbaseSecret,
+	}, nil
+}
+
+func NewClientWithHostURL(httpClient HTTPClient, hostURL, coinbaseKey, coinbaseSecret string) (Client, error) {
+	return &client{
+		httpClient:     httpClient,
+		HostURL:        hostURL,
 		coinbaseKey:    coinbaseKey,
 		coinbaseSecret: coinbaseSecret,
 	}, nil
@@ -74,7 +80,7 @@ func NewClient(
 
 type client struct {
 	httpClient     HTTPClient
-	hostURI        string
+	HostURL        string
 	coinbaseKey    string
 	coinbaseSecret string
 }
@@ -524,7 +530,7 @@ func (c *client) handleErrorStatusCode(res *http.Response, err error) error {
 }
 
 func (c *client) makeRequest(ctx context.Context, method httpMethod, endpoint string, queryParams map[string]string, body io.Reader) (res *http.Response, err error) {
-	url := fmt.Sprintf("%s%s", c.hostURI, endpoint)
+	url := fmt.Sprintf("%s%s", c.HostURL, endpoint)
 
 	if queryParams != nil {
 		qryParamSymbl := "?"

@@ -29,7 +29,7 @@ var _ = Describe("Client", func() {
 		Expect(httpClient).NotTo(BeNil())
 
 		var err error
-		client, err = NewClient(httpClient, "", os.Getenv("COINBASE_TEST_API_KEY"), os.Getenv("COINBASE_TEST_API_SECRET"))
+		client, err = NewClient(httpClient, os.Getenv("COINBASE_TEST_API_KEY"), os.Getenv("COINBASE_TEST_API_SECRET"))
 		Expect(err).To(BeNil())
 		Expect(client).NotTo(BeNil())
 	})
