@@ -348,7 +348,10 @@ func (c *client) CancelOrders(ctx context.Context, orderIDs []string) error {
 	}{}
 
 	body := struct {
-	}{}
+		OrderIDs []string `json:"order_ids"`
+	}{
+		OrderIDs: orderIDs,
+	}
 
 	bodyBts, err := json.Marshal(body)
 	if err != nil {
