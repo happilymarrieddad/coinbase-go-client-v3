@@ -46,7 +46,7 @@ func main() {
 Take a look at the tests for more examples
 
 ## Notes about tests
-WARNING!!! Running the INTEG tests as they are at the moment run against the REAL coinbase API. DO NOT RUN THEM UNLESS YOU HAVE THOROUGHLY GONE THROUGH THE TESTS, KNOW HOW THEY WORK AND ARE OKAY WITH LIVE TESTS!!!!
+WARNING!!! Running the INTEG tests as they are at the moment run against the REAL coinbase API. Do not run them unless you have thoroughly gone through the tests, know how they work and are okay with live tests!!!!
 
 ## Instructions
 TODO:
