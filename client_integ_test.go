@@ -211,4 +211,8 @@ var _ = Describe("Client", func() {
 
 	})
 
+	Context("GetOrder", func() {
+
+	})
+
 })
