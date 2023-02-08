@@ -9,7 +9,7 @@ import (
 	_ "github.com/golang/mock/mockgen/model"
 )
 
-//go:generate mockgen -destination=./mocks/HTTPClient.go -package=mock_client coinbase-go-client-v3 HTTPClient
+//go:generate mockgen -destination=./mocks/HTTPClient.go -package=mock_client github.com/happilymarrieddad/coinbase-go-client-v3 HTTPClient
 type HTTPClient interface {
 	Get(url string) (resp *http.Response, err error)
 	Post(url, contentType string, body io.Reader) (resp *http.Response, err error)

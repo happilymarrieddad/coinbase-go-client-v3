@@ -1,12 +1,13 @@
 package coinbasegoclientv3_test
 
 import (
-	. "coinbase-go-client-v3"
 	"context"
 	"fmt"
 	"net/http"
 	"os"
 	"time"
+
+	. "github.com/happilymarrieddad/coinbase-go-client-v3"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

@@ -1,9 +1,8 @@
-module coinbase-go-client-v3
+module github.com/happilymarrieddad/coinbase-go-client-v3
 
 go 1.19
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/onsi/ginkgo/v2 v2.8.0

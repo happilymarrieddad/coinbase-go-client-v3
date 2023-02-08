@@ -1,9 +1,10 @@
 package coinbasegoclientv3_test
 
 import (
-	. "coinbase-go-client-v3"
-	. "coinbase-go-client-v3/mocks"
 	"os"
+
+	. "github.com/happilymarrieddad/coinbase-go-client-v3"
+	. "github.com/happilymarrieddad/coinbase-go-client-v3/mocks"
 
 	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo/v2"

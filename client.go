@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-//go:generate mockgen -destination=./mocks/Client.go -package=mock_client coinbase-go-client-v3 Client
+//go:generate mockgen -destination=./mocks/Client.go -package=mock_client github.com/happilymarrieddad/coinbase-go-client-v3 Client
 type Client interface {
 	// IsActive tells you if the api is up
 	IsActive(ctx context.Context) (bool, error)
